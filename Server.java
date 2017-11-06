@@ -1,7 +1,11 @@
+import java.io.*;
+import java.net.*;
+import java.lang.Thread;
+
 class Server {
 
-    public static void main(String[] args){
-        server = new ServerSocket(8000);
+    public static void main(String[] args) throws Exception {
+        ServerSocket server = new ServerSocket(8000);
                 
         while(true){
             Socket socket  = server.accept(); //player 1
