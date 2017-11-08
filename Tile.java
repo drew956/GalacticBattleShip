@@ -1,7 +1,5 @@
 public class Tile {
-
 	private int type;
-
 	private boolean occupied;
 
 	public void renderTile() {
