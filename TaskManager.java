@@ -36,10 +36,7 @@ public class TaskManager implements Runnable {
     public void run() {
         /* stuff stuff */
         try{
-            output1.flush();
-            output2.flush();
             output1.writeUTF("Hello worldy world! GO PLAYER 1!!!");
-            output1.writeUTF("testing\n");
             output2.writeUTF("Hello worldy world! GO PLAYER 2!!!");
         }catch (Exception e){
             System.out.println(e.getMessage());

@@ -109,12 +109,10 @@ public class Server extends Application {
 				server = new ServerSocket(this.port);
 		        while(forever){
 		            Socket socket  = server.accept(); //player 1
-		            DataOutputStream out = new DataOutputStream(socket.getOutputStream());
-		            DataInputStream  in  = new DataInputStream(socket.getInputStream());
-		            out.writeUTF("Waiting for player 2\n");      
+		           
 		            Socket socket2 = server.accept(); //player 2
 		            
-		            TaskManager task = new TaskManager(in, out, socket2);
+		            TaskManager task = new TaskManager(socket, socket2);
 		            new Thread(task).start();
 		        }
 		        server.close();
