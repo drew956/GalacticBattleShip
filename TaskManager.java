@@ -21,13 +21,25 @@ public class TaskManager implements Runnable {
         output2 = new DataOutputStream( player2.getOutputStream() );
     }
 
-    /* stuff stuff    
+	public TaskManager(DataInputStream in, DataOutputStream out, Socket socket2) throws Exception {
+        this.player2 = socket2;
+        input1  = in;
+        input2  = new DataInputStream ( player2.getInputStream()  );
+        output1 = out;
+        output2 = new DataOutputStream( player2.getOutputStream() );
+
+	}
+
+	/* stuff stuff    
      * @param           
      * @return a value **/
     public void run() {
         /* stuff stuff */
         try{
+            output1.flush();
+            output2.flush();
             output1.writeUTF("Hello worldy world! GO PLAYER 1!!!");
+            output1.writeUTF("testing\n");
             output2.writeUTF("Hello worldy world! GO PLAYER 2!!!");
         }catch (Exception e){
             System.out.println(e.getMessage());
