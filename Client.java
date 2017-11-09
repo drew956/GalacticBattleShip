@@ -1,5 +1,6 @@
 import java.io.*;
 import java.net.*;
+import java.util.ArrayList;
 import java.lang.Thread;
 
 import javafx.stage.Stage;
@@ -10,11 +11,14 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 
 /* Tutorial on game development using javafx, useful for creating the game loop
  * https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835
@@ -30,6 +34,9 @@ public class Client extends Application {
 	private Socket  server;
 	private DataInputStream  input;
 	private DataOutputStream output;
+	private Stage primaryStage;
+	private ArrayList<Scene> sceneArray = new ArrayList<Scene>();
+	
 	@Override
     public void start(Stage primaryStage) throws Exception {
         primaryStage.setTitle("PrimaryStage!");
@@ -93,11 +100,16 @@ public class Client extends Application {
         pane.add(btn, 0, 3);
         pane.add(textArea, 0, 2);
         
-        primaryStage.setScene(new Scene(pane, 300, 250));
+        sceneArray.add(new Scene(pane, 300, 250));
+        primaryStage.setScene(sceneArray.get(0));
         primaryStage.setWidth(700.0);
         primaryStage.setHeight(350.0);
         primaryStage.show();
+        this.primaryStage = primaryStage;
+        
+        initScenes();
     }
+	
 	public void stop() {
 		if(server != null){
 			try { 
@@ -107,6 +119,7 @@ public class Client extends Application {
 			}
 		}
 	}
+	
     public static void main(String[] args) {
     	System.out.println("Called main");
         launch(args);
@@ -177,5 +190,20 @@ public class Client extends Application {
 	public void waitForOwnTurn() {
 
 	}
+		
+	public void initScenes() {
+		Canvas canvas = new Canvas(600, 800);
+		GraphicsContext gc = canvas.getGraphicsContext2D();
+		gc.setFill(Color.ALICEBLUE );
+		gc.setStroke(Color.GREEN);
+		gc.strokeText("HELLO WORLD", 40.0, 30.0);
+		GridPane pane = new GridPane();
+		pane.add(canvas, 0, 0);
+		
+		Scene canvasScene = new Scene(pane, 600, 800);
+		
+		primaryStage.setScene(canvasScene);
+	}
+	
 
 }
