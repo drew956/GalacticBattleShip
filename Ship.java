@@ -1,55 +1,65 @@
 import java.awt.Color;
+import java.awt.color.ColorSpace;
 
 public class Ship {
-
+	
+	private int ID;
 	private int numSpaces;
-
 	private Color color;
-
 	private int playerID;
-
 	private int x;
-
 	private int y;
-
+	private boolean alive = true;
+	
+	public Ship (int playerID, int x, int y, Color color, int shipID) {
+		this.ID = shipID;
+		this.color = color;
+		this.playerID = playerID;
+		setCoordinates(x,y);
+	}
 	public int getX() {
-		return 0;
+		return x;
 	}
 
 	public int getY() {
-		return 0;
+		return y;
 	}
 
 	public Color getColor() {
-		return null;
+		return color;
 	}
-
 	public int getNumSpaces() {
-		return 0;
+		return numSpaces;
 	}
-
 	public int getPlayerId() {
-		return 0;
+		return ID;
 	}
-
-	public void setX(int x) {
-
+	public void setShipID(int id) {
+		this.ID = id;
 	}
-
-	public void setY(int y) {
-
+	public int getShipID() {
+		return ID;
 	}
-
+	public void setCoordinates(int x, int y) {
+		this.x = x;
+		this.y = y;
+	}
 	public void setColor(Color color) {
-
+		this.color = color;
 	}
-
 	public void setNumSpaces(int n) {
-
+		this.numSpaces = n;
 	}
-
 	public void setPlayerID(int id) {
-
+		this.ID = ID;
 	}
-
+	public void shipDestroyed() {
+		alive = false;
+	}
+	public boolean isAlive() {
+		return this.alive;
+	}
+	public ColorSpace getShipColor() {
+		return color.getColorSpace();
+	}
 }
