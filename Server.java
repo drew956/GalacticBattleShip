@@ -109,8 +109,9 @@ public class Server extends Application {
 				server = new ServerSocket(this.port);
 		        while(forever){
 		            Socket socket  = server.accept(); //player 1
+		           
 		            Socket socket2 = server.accept(); //player 2
-	
+		            
 		            TaskManager task = new TaskManager(socket, socket2);
 		            new Thread(task).start();
 		        }
