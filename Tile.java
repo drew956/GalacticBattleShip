@@ -1,7 +1,13 @@
-public class Tile {
+import javafx.scene.shape.Rectangle;
+
+public class Tile extends Rectangle {
 	private int type;
 	private boolean occupied;
 
+	public Tile() {
+		
+	}
+	
 	public void renderTile() {
 
 	}

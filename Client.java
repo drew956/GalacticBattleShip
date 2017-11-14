@@ -17,6 +17,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
+import javafx.scene.shape.Rectangle;
 import javafx.animation.Animation.Status;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
@@ -106,7 +107,7 @@ public class Client extends Application {
         pane.add(ipOfServer, 1, 1);
         pane.add(btn, 0, 3);
         pane.add(textArea, 0, 2);
-        
+          
         sceneArray.add(new Scene(pane, 300, 250));
         primaryStage.setScene(sceneArray.get(0));
         primaryStage.setWidth(700.0);
@@ -273,7 +274,21 @@ public class Client extends Application {
 										200.0, 0.0, 
 										250.0, 50.0, 
 										150.0, 50.0});
-
+		int k = 20, l = 20;
+		Rectangle[][] tile = new Rectangle[k][l];
+		for (int i = 0; i < k; i++) {
+			for (int j = 0; j < l; j++) {
+				tile[i][j] = new Rectangle();
+				tile[i][j].setWidth(k);
+				tile[i][j].setHeight(l);
+				tile[i][j].setX((i+5)*k);
+				tile[i][j].setY((j+5)*l);
+				tile[i][j].setFill(null);
+				tile[i][j].setStroke(Color.BLACK);
+				board.getChildren().add(tile[i][j]);
+			}
+		}
+		
 		Circle randomCircle = new Circle(50, 50, 50);
 		randomCircle.setFill(Color.AQUA);
 		ship.setFill(Color.BLACK);
@@ -303,8 +318,7 @@ public class Client extends Application {
 		ttPolygon.setCycleCount(TranslateTransition.INDEFINITE);
 		ttPolygon.setAutoReverse(true);
 		ttCircle.play();
-		ttPolygon.play();
-		
+		ttPolygon.play();	
 	}
 	
 	/**
