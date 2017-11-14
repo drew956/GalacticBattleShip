@@ -274,18 +274,14 @@ public class Client extends Application {
 										200.0, 0.0, 
 										250.0, 50.0, 
 										150.0, 50.0});
-		int k = 20, l = 20;
-		Rectangle[][] tile = new Rectangle[k][l];
-		for (int i = 0; i < k; i++) {
-			for (int j = 0; j < l; j++) {
-				tile[i][j] = new Rectangle();
-				tile[i][j].setWidth(k);
-				tile[i][j].setHeight(l);
-				tile[i][j].setX((i+5)*k);
-				tile[i][j].setY((j+5)*l);
-				tile[i][j].setFill(null);
-				tile[i][j].setStroke(Color.BLACK);
-				board.getChildren().add(tile[i][j]);
+		
+		int boardSize = 20;
+		double squareSize = 50;
+		Tile[][] grid = new Tile[boardSize][boardSize];
+		for (int i = 0; i < boardSize; i++) {
+			for (int j = 0; j < boardSize; j++) {
+				grid[i][j] = new Tile(i*squareSize, j*squareSize, squareSize, boardSize);
+				grid[i][j].renderTile(board);
 			}
 		}
 		
