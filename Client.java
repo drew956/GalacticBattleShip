@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -18,12 +19,15 @@ import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Font;
 import javafx.animation.Animation.Status;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
+import javafx.geometry.HPos;
 import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.util.Duration;
@@ -267,20 +271,35 @@ public class Client extends Application {
 	 * 
 	 * **/
 	private void initTestScene() {
-		Scene gameBoard;
+		int size_x = 600;
+		int size_y = 800;
+		
+		Scene game;
 		Pane board = new Pane();
-		gameBoard =  new Scene(board, 600, 600);
+		
+		GridPane UI = new GridPane();
+		//UI.setGridLinesVisible(true);
+		UI.setHgap(10);
+		UI.setVgap(10);
+		UI.setAlignment(Pos.CENTER);
+		
+		game =  new Scene(UI, size_x, size_y);
 		Polygon ship = new Polygon(new double[]{
 										200.0, 0.0, 
 										250.0, 50.0, 
 										150.0, 50.0});
 		
-		int boardSize = 20;
-		double squareSize = 50;
-		Tile[][] grid = new Tile[boardSize][boardSize];
-		for (int i = 0; i < boardSize; i++) {
-			for (int j = 0; j < boardSize; j++) {
-				grid[i][j] = new Tile(i*squareSize, j*squareSize, squareSize, boardSize);
+		TextArea box1 = new TextArea(); // Text boxes for demonstration of UI layout
+		TextArea box2 = new TextArea();
+		TextArea box3 = new TextArea();
+		Label score = new Label("Score 2 : 2");
+		
+		double squareSize = 20;
+		int numTilesSquared = (int)(size_x / squareSize);
+		Tile[][] grid = new Tile[numTilesSquared][numTilesSquared];
+		for (int i = 0; i < numTilesSquared; i++) {
+			for (int j = 0; j < numTilesSquared; j++) {
+				grid[i][j] = new Tile(i*squareSize, j*squareSize, squareSize, numTilesSquared);
 				grid[i][j].renderTile(board);
 			}
 		}
@@ -288,7 +307,14 @@ public class Client extends Application {
 		Circle randomCircle = new Circle(50, 50, 50);
 		randomCircle.setFill(Color.AQUA);
 		ship.setFill(Color.BLACK);
-		board.getChildren().addAll(ship, randomCircle);
+		GridPane.setHalignment(board, HPos.CENTER);
+		GridPane.setHalignment(score, HPos.CENTER);
+		UI.add(board, 1, 1);
+		UI.add(box1, 1, 2);
+		UI.add(box2, 0, 1);
+		UI.add(box3, 2, 1);
+		UI.add(score, 1, 0);
+
 		
 		TranslateTransition ttCircle  = new TranslateTransition(Duration.millis(2000), randomCircle);
 		final TranslateTransition ttPolygon = new TranslateTransition(Duration.millis(2000), ship);
@@ -304,7 +330,7 @@ public class Client extends Application {
 			}
 			
 		});
-		sceneArray.add(gameBoard);
+		sceneArray.add(game);
 		setScreen(sceneArray.size() - 1);
 
 		ttCircle.setByY(200f);
