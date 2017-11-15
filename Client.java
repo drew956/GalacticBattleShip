@@ -257,7 +257,7 @@ public class Client extends Application {
 	}
 
 	/** 
-	 * initTestScene is currently being used to test if using a normal
+	 * <i>initTestScene</i> is currently being used to test if using a normal
 	 * GridPane or other pane would be more effective than using a canvas <br />
 	 * Upon further testing I have concluded that this will be far easier to use than the Canvas element
 	 * 
