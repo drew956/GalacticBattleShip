@@ -109,10 +109,30 @@ public class Server extends Application {
 				server = new ServerSocket(this.port);
 		        while(forever){
 		            Socket socket  = server.accept(); //player 1
-		           
+		            ObjectOutputStream dataOut = new ObjectOutputStream(
+		            	socket.getOutputStream()
+		            );
+		            dataOut.writeUTF("Waiting for player 2");
+		            dataOut.flush();
+					
 		            Socket socket2 = server.accept(); //player 2
+		           
 		            
-		            TaskManager task = new TaskManager(socket, socket2);
+		            ObjectOutputStream dataOut2 = new ObjectOutputStream(
+		             
+	            		socket2.getOutputStream()
+		            );
+		            dataOut.writeInt(0); //this enables us to transition to the next scene, because we know we have a player 2 if we get our ID
+		            dataOut.flush();
+		            dataOut2.writeUTF("Welcome player 2!\nBeginning game...");
+		            dataOut2.flush();
+		            dataOut2.writeInt(1);
+		            dataOut2.flush();
+		            dataOut.reset();
+		            dataOut2.reset();
+		            
+		            TaskManager task = new TaskManager(dataOut, dataOut2, socket, socket2);
+		            //task.setOutputStreams(dataOut, dataOut2);
 		            new Thread(task).start();
 		        }
 		        server.close();

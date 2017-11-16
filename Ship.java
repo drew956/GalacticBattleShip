@@ -1,11 +1,13 @@
-import java.awt.Color;
-import java.awt.color.ColorSpace;
+import javafx.scene.paint.Color;
+import java.io.Serializable;
 
-public class Ship {
+import javafx.scene.canvas.GraphicsContext;
+
+public class Ship implements Serializable {
 	
 	private int ID;
-	private int numSpaces;
-	private Color color;
+	private int numSpaces = 3;
+	//private Color color;
 	private int playerID;
 	private int x;
 	private int y;
@@ -13,9 +15,13 @@ public class Ship {
 	
 	public Ship (int playerID, int x, int y, Color color, int shipID) {
 		this.ID = shipID;
-		this.color = color;
+		//this.color = color;
 		this.playerID = playerID;
 		setCoordinates(x,y);
+	}
+	public Ship (int playerID) {
+		//this.color = playerID == 0 ? Color.BLUE : Color.RED;
+		this.playerID = playerID;
 	}
 	public int getX() {
 		return x;
@@ -26,13 +32,13 @@ public class Ship {
 	}
 
 	public Color getColor() {
-		return color;
-	}
+		return playerID == 0 ? Color.BLUE : Color.RED;
+    }
 	public int getNumSpaces() {
 		return numSpaces;
 	}
 	public int getPlayerId() {
-		return ID;
+		return playerID;
 	}
 	public void setShipID(int id) {
 		this.ID = id;
@@ -44,9 +50,9 @@ public class Ship {
 		this.x = x;
 		this.y = y;
 	}
-	public void setColor(Color color) {
-		this.color = color;
-	}
+	//public void setColor(Color color) {
+	//	this.color = color;
+	//}
 	public void setNumSpaces(int n) {
 		this.numSpaces = n;
 	}
@@ -59,7 +65,20 @@ public class Ship {
 	public boolean isAlive() {
 		return this.alive;
 	}
-	public ColorSpace getShipColor() {
-		return color.getColorSpace();
+	public Color getShipColor() {
+		return playerID == 0 ? Color.BLUE : Color.RED;
+	}
+	public void drawShip(GraphicsContext gc, int x, int y, int width) {
+		gc.setFill(playerID == 0 ? Color.BLUE : Color.RED);
+		gc.setStroke(playerID == 0 ? Color.BLUE : Color.RED);
+		if(playerID == 0){
+			gc.fillPolygon( new double[] {x + width/6, x + 5 * width / 6,     x + width / 2}, 
+							new double[] {y + width/6,      y + width/ 6, y + 5 * width / 6}, 
+							3);
+		}else {
+			gc.fillPolygon( new double[] {    x + width/6,  x + 5 * width / 6, x + width / 2}, 
+							new double[] {y + 5 * width/6,   y + 5 * width/ 6, y +  width / 6}, 
+							3);
+		}    
 	}
 }

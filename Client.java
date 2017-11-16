@@ -4,6 +4,9 @@ import java.util.ArrayList;
 import java.lang.Thread;
 
 import javafx.stage.Stage;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -11,8 +14,12 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Border;
+import javafx.scene.layout.ColumnConstraints;
+import javafx.scene.layout.ColumnConstraintsBuilder;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.Region;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
@@ -21,6 +28,7 @@ import javafx.scene.shape.Polygon;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.animation.Animation.Status;
+import javafx.animation.AnimationTimer;
 import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
@@ -41,11 +49,14 @@ public class Client extends Application {
 	private Tile[][] map;
 	private Ship[][] fleet;
 	private Player   player;
+	private int      playerID;
 	private boolean myTurn;
 	private boolean baseStatus;
 	private Socket  server;
-	private DataInputStream  input;
-	private DataOutputStream output;
+	//private DataInputStream  input;
+	//private DataOutputStream output;
+	private ObjectInputStream input;
+	private ObjectOutputStream output;
 	private Stage primaryStage;
 	private ArrayList<Scene> sceneArray = new ArrayList<Scene>();
 	
@@ -80,14 +91,14 @@ public class Client extends Application {
  
             public void handle(ActionEvent event) {
                 try {
-                	Socket server = new Socket(
+                	server = new Socket(
                 			ipOfServer.getText(),  
                 			Integer.parseInt(port.getText())
                 	);
-                	DataInputStream input = new DataInputStream(
+                	input = new ObjectInputStream(
                 			server.getInputStream()
                 	);
-                	DataOutputStream output = new DataOutputStream(
+                	output = new ObjectOutputStream(
                 			server.getOutputStream()
                 	);
                 	/*
@@ -96,11 +107,22 @@ public class Client extends Application {
                 			ipOfServer.getText(),  
                 			Integer.parseInt(port.getText())
                 	);*/
-                    String data = input.readUTF();
-                    textArea.appendText(data + "\n");
-                    server.close();
+                	/*
+                    String message = input.readUTF();
+                    textArea.appendText(message + "\n");
+                    */
+                	System.out.println("About to get int");
+                	String msg = input.readUTF();
+                	playerID = input.readInt(); 
+                	System.out.println("Player ID set to " + playerID);
+                    initScenes(); //moved to here, because Animation Timer loop will start and may cause lag
+                	setScreen(sceneArray.size() - 1);
+                	textArea.appendText(msg);
+                	textArea.appendText("" + playerID);
+
                 } catch( Exception e ){
                     textArea.appendText(e + "\n");
+                    e.printStackTrace();
                 }
             }
             
@@ -119,7 +141,6 @@ public class Client extends Application {
         primaryStage.show();
         this.primaryStage = primaryStage;
         
-        initScenes();
     }
 	
 	public void stop() {
@@ -156,10 +177,10 @@ public class Client extends Application {
             
             server = new Socket(host, 8000);
 
-            input = new DataInputStream(server.getInputStream());
+            DataInputStream input = new DataInputStream(server.getInputStream());
 
             // Create an output stream to send data to the server
-            output = new DataOutputStream(server.getOutputStream());
+            DataOutputStream output = new DataOutputStream(server.getOutputStream());
             /*ClientTaskManager task = new ClientTaskManager(server);
             Thread t = new Thread(task);
             t.start();*/
@@ -204,8 +225,9 @@ public class Client extends Application {
 	}
 		
 	public void initScenes() {
-		initGameScene(); //putting each scene into its own function will allow us to tweak them easier
-		initTestScene();
+		//initGameScene(); //putting each scene into its own function will allow us to tweak them easier
+		//initTestScene();
+		initTestScene2();
 	}
 	/**
 	 * <p>Initializes the main game's Screen object
@@ -274,24 +296,26 @@ public class Client extends Application {
 		int size_x = 600;
 		int size_y = 800;
 		
-		Scene game;
 		Pane board = new Pane();
 		
 		GridPane UI = new GridPane();
 		//UI.setGridLinesVisible(true);
-		UI.setHgap(10);
-		UI.setVgap(10);
-		UI.setAlignment(Pos.CENTER);
+		UI.setHgap(0);
+		UI.setVgap(0);
+		//UI.setAlignment(Pos.CENTER);
 		
-		game =  new Scene(UI, size_x, size_y);
+		Scene game =  new Scene(UI, size_x, size_y);
+
+		
 		Polygon ship = new Polygon(new double[]{
 										200.0, 0.0, 
 										250.0, 50.0, 
 										150.0, 50.0});
 		
-		TextArea box1 = new TextArea(); // Text boxes for demonstration of UI layout
-		TextArea box2 = new TextArea();
-		TextArea box3 = new TextArea();
+		 
+		    TextArea box1 = new TextArea(); // Text boxes for demonstration of UI layout
+			TextArea box2 = new TextArea();
+			TextArea box3 = new TextArea();
 		Label score = new Label("Score 2 : 2");
 		
 		double squareSize = 20;
@@ -300,7 +324,7 @@ public class Client extends Application {
 		for (int i = 0; i < numTilesSquared; i++) {
 			for (int j = 0; j < numTilesSquared; j++) {
 				grid[i][j] = new Tile(i*squareSize, j*squareSize, squareSize, numTilesSquared);
-				grid[i][j].renderTile(board);
+				grid[i][j].renderTile(board); //this method does not belong inside of TILE
 			}
 		}
 		
@@ -310,9 +334,9 @@ public class Client extends Application {
 		GridPane.setHalignment(board, HPos.CENTER);
 		GridPane.setHalignment(score, HPos.CENTER);
 		UI.add(board, 1, 1);
-		UI.add(box1, 1, 2);
+		 UI.add(box1, 1, 2);
 		UI.add(box2, 0, 1);
-		UI.add(box3, 2, 1);
+		UI.add(box3, 2, 1); 
 		UI.add(score, 1, 0);
 
 		
@@ -342,7 +366,105 @@ public class Client extends Application {
 		ttCircle.play();
 		ttPolygon.play();	
 	}
-	
+	private void initTestScene2() {
+		int size_x = 600;
+		int size_y = 635;
+		
+		int tilesX = 20; //number of tiles in the x direction
+		int tilesY = 20; //number of tiles (height of Tile[][] map)
+		Canvas canvas = new Canvas(size_x, size_y);
+		final CanvasManager manager = new CanvasManager(canvas, primaryStage);
+		manager.setPlayerID(playerID); //by the time this is called, playerID is already set
+		
+	    final long startNanoTime = System.nanoTime();//System.nanoTime();
+	    System.out.println("About to create animation timer");
+	    new AnimationTimer()
+	    {
+	    	final static private int WAITING = 0;
+	    	final static private int DOING_TURN = 1;
+	    	final static private int DONE_TURN = 2;
+
+	    	private int status = WAITING;//default
+	        public void handle(long currentNanoTime)
+	        {
+	            double t = (currentNanoTime - startNanoTime) / 1000000000.0; //time in seconds 
+	            //primaryStage.getScene().setWidth(primaryStage.getWidth());
+	            switch(status){
+	            	case WAITING:
+	            		try{
+	            			Ship[][] ships = (Ship[][]) input.readObject();
+	            			manager.setFleet(ships);
+	            			manager.setTurn();
+		            		status = DOING_TURN;
+	            		}catch(Exception e){
+	            			System.out.println("ERROR OCCURRED IN animation timer");
+	            			e.printStackTrace();
+	            			manager.setFleet(null);
+	            		}
+	            		break;
+	            	case DOING_TURN:
+	            		if(manager.doneWithTurn()){
+		           			status = DONE_TURN;
+	            		}
+	            		break;
+	            	case DONE_TURN:
+	            		try{
+	            			output.reset();
+	            			output.writeObject(manager.getShips());
+	            			output.flush();
+	            		}catch(Exception e){
+	            			e.printStackTrace();
+	            		}
+	            		status = WAITING;
+	            		break;
+	            }
+	            if(t > 5.0) {
+	            	manager.drawMap();
+        		}
+	        }
+	        private void endTurn(){
+	        	
+	        }
+	        private void getNewMap(){
+	        	//get the game board from the server
+	    		try {
+	    			Ship[][] fleet = (Ship[][]) input.readObject();
+	    		} catch (ClassNotFoundException e) {
+	    			e.printStackTrace();
+	    		} catch (IOException e) {
+	    			e.printStackTrace();
+	    		}
+	    		manager.setFleet(fleet);
+	        }
+	        private void sendNewMap(){
+	        	
+	        }
+	    }.start();
+	    System.out.println("Just started the animation timer");
+		
+	    GridPane pane = new GridPane();	    
+		pane.add(canvas, 0,0);
+		ColumnConstraints column1 = new ColumnConstraints();
+		column1.setPercentWidth(100);
+		column1.setHgrow(Priority.ALWAYS);
+		pane.getColumnConstraints().add(0, column1); // each get 50% of width
+		
+		//createAndSetNewScene(pane, size_x, size_y);
+		Scene newScene = new Scene(pane, size_x, size_y);		
+		sceneArray.add(newScene);
+	}
+	private void createAndSetNewScene(Parent p, int width, int height){
+		Scene newScene = new Scene(p, width, height);
+		
+		sceneArray.add(newScene);
+		
+		primaryStage.setWidth((double) width);
+		primaryStage.setHeight((double) height);
+		primaryStage.setScene(newScene);
+		primaryStage.setTitle("Scene " + sceneArray.size());
+		
+		//primaryStage.sh
+	}
 	/**
 	 * Changes the current screen to a new one stored inside of the private primaryStage attribute
 	 * Checks to make sure the scene requested is within bounds
@@ -353,6 +475,7 @@ public class Client extends Application {
 			primaryStage.setWidth(sceneArray.get(i).getWidth());
 			primaryStage.setHeight(sceneArray.get(i).getHeight());
 			primaryStage.setScene(sceneArray.get(i));
+			primaryStage.setTitle("Scene " + sceneArray.size()); //can create a map <Integer, String> for titles
 		} else {
 			System.out.println("setScreen(int i): You've entered an invalid index for your scene.\n");
 		}

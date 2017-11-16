@@ -55,7 +55,7 @@ public class Player {
 		}
 		//Initializes new ship for each spot in the array
 		for (int i = 0; i < ships.length; i++) {
-			ships[i] = new Ship(playerID, x, y, color, shipID);
+			ships[i] = new Ship(playerID);
 			shipID++;
 		}
 	}
