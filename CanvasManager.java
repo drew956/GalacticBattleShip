@@ -76,10 +76,12 @@ public class CanvasManager {
 								System.out.println("You can't destroy yourself!");
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
-									System.out.println(
-										fleet[newX][newY].getPlayerId() == 0 ? "Ship of Player 1 destroyed" : "Ship of Player 2 destroyed"
-									);
-									fleet[newX][newY] = null;
+									if( ((Math.abs((double)newX - oldX)) + (Math.abs((double) newY - oldY)) ) <= fleet[oldX][oldY].getNumSpaces()){
+										System.out.println(
+											fleet[newX][newY].getPlayerId() == 0 ? "Ship of Player 1 destroyed" : "Ship of Player 2 destroyed"
+										);
+										fleet[newX][newY] = null;
+									}
 								}
 							}
 						} else {
