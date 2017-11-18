@@ -1,5 +1,3 @@
-import java.util.Random;
-
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
