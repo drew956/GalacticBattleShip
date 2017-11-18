@@ -1,3 +1,5 @@
+import java.util.Random;
+
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
@@ -20,6 +22,7 @@ public class CanvasManager {
 	private int state = 0;//default
 	private Stage root;
 	private int playerID = 0;
+	private Random num = new Random();
 	
 
 	/** 
@@ -76,10 +79,27 @@ public class CanvasManager {
 								System.out.println("You can't destroy yourself!");
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
-									System.out.println(
-										fleet[newX][newY].getPlayerId() == 0 ? "Ship of Player 1 destroyed" : "Ship of Player 2 destroyed"
-									);
-									fleet[newX][newY] = null;
+									int luckyNum = num.nextInt(2);
+									if (luckyNum == 0) {
+										System.out.println("Ship of Player " + (fleet[newX][newY].getPlayerId() + 1) + " destroyed");
+										fleet[newX][newY] = null;
+										fleet[newX][newY] = fleet[oldX][oldY];
+										fleet[oldX][oldY] = null;
+//										System.out.println("You won" );
+
+									}
+									else {
+										System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " destroyed");
+										fleet[oldX][oldY] = null;
+//										System.out.println("Your ship was destroyed" );
+									}
+//									System.out.println(
+//										fleet[newX][newY].getPlayerId() == 0 ? "Ship of Player 1 destroyed" : "Ship of Player 2 destroyed"
+//									);
+//									fleet[newX][newY] = null;
+//									fleet[newX][newY] = fleet[oldX][oldY];
+//									fleet[oldX][oldY] = null;
+
 								}
 							}
 						} else {
@@ -112,10 +132,12 @@ public class CanvasManager {
 				//fleet[i][j] = new Ship( j < tilesY / 2 ? 0 : 1);
 			}
 		}
-		
+		//Ship placement
+		int row = 0;
 		for(int i = 0; i < fleet[0].length; i += 3){
-			fleet[i][0] = new Ship(0);
+			fleet[i][row] = new Ship(0);
 			fleet[i][fleet[0].length - 1] = new Ship(1);
+			row++;
 		}
 	}
 	public void drawMap(){

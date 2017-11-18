@@ -334,7 +334,7 @@ public class Client extends Application {
 		GridPane.setHalignment(board, HPos.CENTER);
 		GridPane.setHalignment(score, HPos.CENTER);
 		UI.add(board, 1, 1);
-		 UI.add(box1, 1, 2);
+		UI.add(box1, 1, 2);
 		UI.add(box2, 0, 1);
 		UI.add(box3, 2, 1); 
 		UI.add(score, 1, 0);
