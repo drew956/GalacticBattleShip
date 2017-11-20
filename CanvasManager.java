@@ -88,8 +88,8 @@ public class CanvasManager {
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
 									if( distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
-										int luckyNum = num.nextInt(2);
-										if (luckyNum == 0) {
+										int luckyNum = num.nextInt(10)+1;
+										if (luckyNum <= 8) {
 											System.out.println("Ship of Player " + (fleet[newX][newY].getPlayerId() + 1) + " destroyed");
 											fleet[newX][newY] = null;
 											fleet[newX][newY] = fleet[oldX][oldY];
