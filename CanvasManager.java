@@ -79,8 +79,8 @@ public class CanvasManager {
 								System.out.println("You can't destroy yourself!");
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
-									int luckyNum = num.nextInt(2);
-									if (luckyNum == 0) {
+									int luckyNum = num.nextInt(10)+1;
+									if (luckyNum <= 8) {
 										System.out.println("Ship of Player " + (fleet[newX][newY].getPlayerId() + 1) + " destroyed");
 										fleet[newX][newY] = null;
 										fleet[newX][newY] = fleet[oldX][oldY];
@@ -89,8 +89,8 @@ public class CanvasManager {
 
 									}
 									else {
-										System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " destroyed");
-										fleet[oldX][oldY] = null;
+										System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " missed");
+										//fleet[oldX][oldY] = null;
 //										System.out.println("Your ship was destroyed" );
 									}
 //									System.out.println(
