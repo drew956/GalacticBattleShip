@@ -46,6 +46,8 @@ public class CanvasManager {
 			private int oldY;
 			private int newX;
 			private int newY;
+			private int counter = 0;
+	
 			/* 
 			 * Map the X Y coordinates into the slots of the multidimensional array
 			 * */
@@ -71,8 +73,11 @@ public class CanvasManager {
 						//do other processing, such as (if the new square is an enemy attack them,)
 						// 							   (but if it is empty, move there)
 						if(fleet[oldX][oldY] != null && fleet[oldX][oldY].getPlayerId() == playerID){
-							state = WAITING;
-
+							counter++;
+							if(counter == 2) {
+								state = WAITING;
+								counter = 0;
+							}
 							if(fleet[newX][newY] == null){
 								if(  distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
 									fleet[newX][newY] = fleet[oldX][oldY];
