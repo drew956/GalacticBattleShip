@@ -44,8 +44,8 @@ import javafx.util.Duration;
  * https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835
  * 
  * */
+
 public class Client extends Application {
-	BufferedReader buff = new BufferedReader(new InputStreamReader(System.in));
 	private Tile[][] map;
 	private Ship[][] fleet;
 	private Player   player;
@@ -53,8 +53,6 @@ public class Client extends Application {
 	private boolean myTurn;
 	private boolean baseStatus;
 	private Socket  server;
-	//private DataInputStream  input;
-	//private DataOutputStream output;
 	private ObjectInputStream input;
 	private ObjectOutputStream output;
 	private Stage primaryStage;
@@ -101,16 +99,7 @@ public class Client extends Application {
                 	output = new ObjectOutputStream(
                 			server.getOutputStream()
                 	);
-                	/*
-                	 * For simulating two connections
-                	Socket server2 = new Socket(
-                			ipOfServer.getText(),  
-                			Integer.parseInt(port.getText())
-                	);*/
-                	/*
-                    String message = input.readUTF();
-                    textArea.appendText(message + "\n");
-                    */
+                	
                 	System.out.println("About to get int");
                 	String msg = input.readUTF();
                 	playerID = input.readInt(); 
@@ -168,7 +157,7 @@ public class Client extends Application {
             System.out.println(e);
         }
 	} */
-    
+    @Deprecated
     private void connectToServer(){
         String host = "localhost";
         
@@ -253,18 +242,11 @@ public class Client extends Application {
 		gc.fillPolygon( new double[] {100.0, 150.0, 100.0, 50.0}, new double[] {50.0, 100.0, 150.0, 100.0}, 4);
 		gc.strokeOval(canvas.getWidth()/2 - 40/2, canvas.getHeight()/2 - 60/2, 40, 60);
 		
-		//not using because it doesn't overlay where you'd expect
-		/*Polygon ship = new Polygon(new double[]{
-										200.0, 0.0, 
-										250.0, 50.0, 
-										150.0, 50.0});
-		*/
 		
-		//ship.setFill(Color.BLACK);
+		
 		GridPane pane = new GridPane();
 		pane.add(canvas, 0, 0);
-		//pane.getChildren().add(ship);
-		
+
 		//this is for figuring out where things are positioned
 		canvas.setOnMouseClicked(new EventHandler<MouseEvent>(){
 
@@ -366,6 +348,7 @@ public class Client extends Application {
 		ttCircle.play();
 		ttPolygon.play();	
 	}
+
 	private void initTestScene2() {
 		int size_x = 600;
 		int size_y = 635;
@@ -389,6 +372,9 @@ public class Client extends Application {
 	        {
 	            double t = (currentNanoTime - startNanoTime) / 1000000000.0; //time in seconds 
 	            //primaryStage.getScene().setWidth(primaryStage.getWidth());
+	            //if(this.status == WAITING){
+	            //	manager.drawMap();
+	            //}
 	            switch(status){
 	            	case WAITING:
 	            		try{
@@ -418,7 +404,7 @@ public class Client extends Application {
 	            		status = WAITING;
 	            		break;
 	            }
-	            if(t > 5.0) {
+	            if(t > 1.0) {
 	            	manager.drawMap();
         		}
 	        }

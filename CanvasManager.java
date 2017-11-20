@@ -1,9 +1,11 @@
 import java.util.Random;
+import java.util.Vector;
 
 import javafx.event.EventHandler;
 import javafx.scene.paint.Color;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
 
@@ -23,7 +25,8 @@ public class CanvasManager {
 	private Stage root;
 	private int playerID = 0;
 	private Random num = new Random();
-	
+	private Image bgImage = new Image("file:bg2.gif");
+	private final Vector<Integer> selected = new Vector<Integer>(2,1);
 
 	/** 
 	 * setStage is used to set the stage that will hold this thing.
@@ -34,6 +37,8 @@ public class CanvasManager {
 		gc = canvas.getGraphicsContext2D();
 		this.root = rooty;
 		initializeShips();
+		selected.add(0);
+		selected.add(0);
 		
 		canvas.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			
@@ -55,6 +60,9 @@ public class CanvasManager {
 					if(state == FIRST_CLICK){
 						oldX = indexX;
 						oldY = indexY;
+						selected.set(0, oldX); //storing these so we can highlight the square
+						selected.set(1, oldY);
+						
 						state = SECOND_CLICK;
 						System.out.println("First click");
 					}else if (state == SECOND_CLICK){
@@ -66,7 +74,7 @@ public class CanvasManager {
 							state = WAITING;
 
 							if(fleet[newX][newY] == null){
-								if( ((Math.abs((double)newX - oldX)) + (Math.abs((double) newY - oldY)) ) <= fleet[oldX][oldY].getNumSpaces()){
+								if(  distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
 									fleet[newX][newY] = fleet[oldX][oldY];
 									fleet[oldX][oldY] = null;
 										
@@ -74,32 +82,28 @@ public class CanvasManager {
 									System.out.println("Unable to move! Too far away!");
 									state = FIRST_CLICK;//so it doesn't just end your turn for making a mistake
 								}
-							}else if(fleet[newX][newY] == fleet[oldX][oldY] ) { 
+							}else if(fleet[newX][newY].getPlayerId() == fleet[oldX][oldY].getPlayerId() ) { 
 								state = FIRST_CLICK;
 								System.out.println("You can't destroy yourself!");
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
-									int luckyNum = num.nextInt(2);
-									if (luckyNum == 0) {
-										System.out.println("Ship of Player " + (fleet[newX][newY].getPlayerId() + 1) + " destroyed");
-										fleet[newX][newY] = null;
-										fleet[newX][newY] = fleet[oldX][oldY];
-										fleet[oldX][oldY] = null;
-//										System.out.println("You won" );
-
+									if( distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
+										int luckyNum = num.nextInt(2);
+										if (luckyNum == 0) {
+											System.out.println("Ship of Player " + (fleet[newX][newY].getPlayerId() + 1) + " destroyed");
+											fleet[newX][newY] = null;
+											fleet[newX][newY] = fleet[oldX][oldY];
+											fleet[oldX][oldY] = null;
+										}
+										else {
+											System.out.println("Missed! HA HA HA!!");
+											//System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " destroyed");
+											//fleet[oldX][oldY] = null;
+										}
+									}else{
+										System.out.println("Too far to attack!");
+										state = CanvasManager.FIRST_CLICK;
 									}
-									else {
-										System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " destroyed");
-										fleet[oldX][oldY] = null;
-//										System.out.println("Your ship was destroyed" );
-									}
-//									System.out.println(
-//										fleet[newX][newY].getPlayerId() == 0 ? "Ship of Player 1 destroyed" : "Ship of Player 2 destroyed"
-//									);
-//									fleet[newX][newY] = null;
-//									fleet[newX][newY] = fleet[oldX][oldY];
-//									fleet[oldX][oldY] = null;
-
 								}
 							}
 						} else {
@@ -133,17 +137,19 @@ public class CanvasManager {
 			}
 		}
 		//Ship placement
+		//we don't increment row because they aren't being placed diagonally
+		//they are in a line 
+		//also this method never gets called, the server is doing the initialization
 		int row = 0;
 		for(int i = 0; i < fleet[0].length; i += 3){
 			fleet[i][row] = new Ship(0);
 			fleet[i][fleet[0].length - 1] = new Ship(1);
-			row++;
+			//row++;
 		}
 	}
 	public void drawMap(){
-		//count++;
-		//System.out.println("Called drawMap " + count + "times");
 		gc.clearRect(0, 0, root.getScene().getWidth(), root.getScene().getHeight());
+		gc.drawImage(bgImage, 0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		drawRectangles();
 		drawShips();	
 		
@@ -161,16 +167,34 @@ public class CanvasManager {
 		}
 	}
 	private void drawRectangle(int x, int y, int width) { //, int width, int height){
-		//int width = (int) canvas.getWidth() / tilesX;
 		
-		//gc.clearRect(x, y, width, width);
         gc.setStroke(bg);		
 		gc.setFill(this.doneWithTurn() ? Color.GRAY : bg);
-		gc.fillRect(x, y, width, width);
 		
+		//if we already selected a square, and if the square we selected is the current one we are drawing
+		//then color the background of the square using transparent color
+		if(  hasSelectedFirstShip() && hasSelectedSquare(x, y, width)){ 
+			gc.setFill(Color.rgb(255, 8 * 16 + 12, 0, 0.3));
+			//#FF8C00 Dark Orange, but looks different due to alpha value
+			gc.fillRect(x, y, width, width);
+
+		}
+		
+		if(  hasSelectedFirstShip() ){
+			int distance = distanceFromSelected(x / width, y / width);
+			if(fleet[selected.get(0)][selected.get(1)] != null){
+				if( distance <= fleet[selected.get(0)][selected.get(1)].getNumSpaces() ){
+					if( distance != 0 ){
+						gc.setFill(Color.rgb(0, 255, 255, 0.3) );
+						//gc.fillText( "" + distance, x + width/2, y + width/2); //gc.getTextBaseline()
+						gc.fillRect(x, y, width, width);
+					}
+				}		
+			}
+		}
 		gc.setStroke(Color.WHITE );
 		gc.strokeRect(x, y, width, width);
-		
+
 	}
 	private void drawShips(){
 		int width = (int) root.getScene().getWidth() / tilesX;
@@ -183,5 +207,22 @@ public class CanvasManager {
 	}
 	public Ship[][] getShips() {
 		return this.fleet;
+	}
+	private boolean hasSelectedSquare(int x, int y, int width){
+		return selected.get(0) == x / width && selected.get(1) == y / width;
+	}
+	/** 
+	 * distanceFromSelected(int currentX, int currentY) expects currentX and currentY to be array indexes,
+	 * not pixels. 
+	 * so you have to do your x/ width, y / width conversions prior to using this method.
+	 * This is to accommodate more use-cases, and for making existing code more readable.
+	 * **/
+	private int distanceFromSelected(int currentX, int currentY){
+		int selectedX = selected.get(0);
+		int selectedY = selected.get(1);
+		return ((int) (Math.abs((double)currentX - selectedX)) + (int) (Math.abs((double) currentY - selectedY))); 	
+	}
+	private boolean hasSelectedFirstShip(){
+		return this.state == CanvasManager.SECOND_CLICK;
 	}
 }

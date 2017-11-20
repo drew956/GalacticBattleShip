@@ -6,10 +6,6 @@ public class TaskManager implements Runnable {
     private Socket player1;
     private Socket player2;
 	private Tile[][] map;
-    private DataInputStream  input1;
-    private DataInputStream  input2;
-    private DataOutputStream output1;
-    private DataOutputStream output2;
     private ObjectInputStream  obInput1;
     private ObjectInputStream  obInput2;
     private ObjectOutputStream obOutput1;
@@ -21,10 +17,6 @@ public class TaskManager implements Runnable {
     TaskManager(Socket player1, Socket player2) throws Exception {
         this.player1 = player1;
         this.player2 = player2;
-        //input1    = new DataInputStream   ( player1.getInputStream()  );
-        //input2    = new DataInputStream   ( player2.getInputStream()  );
-        //output1   = new DataOutputStream  ( player1.getOutputStream() );
-        //output2   = new DataOutputStream  ( player2.getOutputStream() );
         obInput1  = new ObjectInputStream ( player1.getInputStream()  );
 		obInput2  = new ObjectInputStream ( player2.getInputStream()  );
 		obOutput1 = new ObjectOutputStream( player1.getOutputStream() );
@@ -49,11 +41,7 @@ public class TaskManager implements Runnable {
 
 	}
 
-	/* stuff stuff    
-     * @param           
-     * @return a value **/
     public void run() {
-        /* stuff stuff */
     	while(true){
 	        try{
 	        	obOutput1.writeObject(ships); //this is how we know whose turn it is: it always starts by sending the map to P1
@@ -61,19 +49,30 @@ public class TaskManager implements Runnable {
 	        	ships = (Ship[][]) obInput1.readObject();
 	        }catch (Exception e){
 	            System.out.println(e.getMessage());
+	            try {
+					obOutput1.close();
+					obInput1.close();
+				} catch (IOException e1) {
+					e1.printStackTrace();
+				}
+	            break;
 	        }
 	        
 	    	try {
 				obOutput2.writeObject(ships);
 	        	obOutput2.reset();
 		    	ships = (Ship[][]) obInput2.readObject();
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
+			} catch (Exception e) {
 				e.printStackTrace();
-			} catch (ClassNotFoundException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
+				try {
+					obOutput2.close();
+					obInput2.close();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+				break;
+			} 
     	}
     }
     

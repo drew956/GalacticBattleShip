@@ -25,13 +25,6 @@ public class Server extends Application {
 	private ServerTask taskHandle;
 	
     public static void main(String[] args) {
-        /*
-         * This shouldn't happen until we set the settings
-    	ServerTask task = new Server.ServerTask();
-        Thread handleConnections = new Thread(task);
-        handleConnections.start();
-        */
-        //gui stuff
         launch(args);
     }
 
@@ -100,7 +93,6 @@ public class Server extends Application {
 	
 	static class ServerTask implements Runnable { 
 		private int port = 8000;//default port
-		//private GridPane parentGridPane;
 		private boolean forever = true;
 		
 		public void run() {
@@ -138,11 +130,6 @@ public class Server extends Application {
 		        server.close();
 			} catch(Exception e) {
 				System.out.println(e);
-				//I was going to re-enable the textfield and 
-				//button if the servertask ended,
-				//but it shouldn't ever end to be honest.
-				//ObservableList<Node> myList = this.parentGridPane.getChildren();
-				//myList.forEach();
 			}
 		}
 

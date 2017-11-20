@@ -1,7 +1,13 @@
 import javafx.scene.paint.Color;
+
+import java.io.File;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.image.Image;
 
 public class Ship implements Serializable {
 	
@@ -12,16 +18,23 @@ public class Ship implements Serializable {
 	private int x;
 	private int y;
 	private boolean alive = true;
+	private transient Image[] sprites;
 	
 	public Ship (int playerID, int x, int y, Color color, int shipID) {
 		this.ID = shipID;
 		//this.color = color;
 		this.playerID = playerID;
 		setCoordinates(x,y);
+		sprites = new Image[2];
+		sprites[0] = new Image("file:p1.png", true);
+		sprites[1] = new Image("file:p2.png", true);
 	}
 	public Ship (int playerID) {
 		//this.color = playerID == 0 ? Color.BLUE : Color.RED;
 		this.playerID = playerID;
+		sprites = new Image[2];
+		sprites[0] = new Image("file:p1.png", true);
+		sprites[1] = new Image("file:p2.png", true);
 	}
 	public int getX() {
 		return x;
@@ -69,6 +82,14 @@ public class Ship implements Serializable {
 		return playerID == 0 ? Color.BLUE : Color.RED;
 	}
 	public void drawShip(GraphicsContext gc, int x, int y, int width) {
+		Image img = (playerID == 0 ? sprites[0] : sprites[1]);
+		gc.drawImage(img, x, y, width, width);
+		System.out.println(img.getHeight());
+		System.out.println(img.isBackgroundLoading());
+		System.out.println(img.isError());
+		System.out.println(img.getException());
+	}
+	public void drawShipOld(GraphicsContext gc, int x, int y, int width) {
 		gc.setFill(playerID == 0 ? Color.BLUE : Color.RED);
 		gc.setStroke(playerID == 0 ? Color.BLUE : Color.RED);
 		if(playerID == 0){
@@ -81,4 +102,15 @@ public class Ship implements Serializable {
 							3);
 		}    
 	}
+	private void writeObject(ObjectOutputStream s) throws IOException {
+        s.defaultWriteObject();
+    }
+
+    // custom deserialization:
+    private void readObject(ObjectInputStream s) throws IOException, ClassNotFoundException {
+        s.defaultReadObject();
+        this.sprites = new Image[2];
+        this.sprites[0] = new Image("file:p1.png");
+        this.sprites[1] = new Image("file:p2.png");
+    }
 }
