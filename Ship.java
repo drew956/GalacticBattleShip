@@ -1,6 +1,5 @@
 import javafx.scene.paint.Color;
 
-import java.io.File;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -81,9 +80,9 @@ public class Ship implements Serializable {
 	public Color getShipColor() {
 		return playerID == 0 ? Color.BLUE : Color.RED;
 	}
-	public void drawShip(GraphicsContext gc, int x, int y, int width) {
+	public void drawShip(GraphicsContext gc, double x, double y, double height) {
 		Image img = (playerID == 0 ? sprites[0] : sprites[1]);
-		gc.drawImage(img, x, y, width, width);
+		gc.drawImage(img, x, y, height, height);
 	}
 	public void drawShipOld(GraphicsContext gc, int x, int y, int width) {
 		gc.setFill(playerID == 0 ? Color.BLUE : Color.RED);

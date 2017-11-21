@@ -423,6 +423,7 @@ public class Client extends Application {
 	    BorderPane pane = new BorderPane();
 		pane.setCenter(canvas);
 		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+
 		/*
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setPercentWidth(100);
@@ -431,14 +432,17 @@ public class Client extends Application {
 		*/
 
 		//createAndSetNewScene(pane, size_x, size_y);
-		Scene newScene = new Scene(pane, size_x, size_y);		
+		Scene newScene = new Scene(pane, size_x, size_y);
 		sceneArray.add(newScene);
+
+		primaryStage.setMinWidth(newScene.getWidth()+15);
+		primaryStage.setMinHeight(newScene.getHeight());
 	}
 	private void createAndSetNewScene(Parent p, int width, int height){
 		Scene newScene = new Scene(p, width, height);
 		
 		sceneArray.add(newScene);
-		
+
 		primaryStage.setWidth((double) width);
 		primaryStage.setHeight((double) height);
 		primaryStage.setScene(newScene);

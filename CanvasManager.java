@@ -25,20 +25,20 @@ public class CanvasManager {
 	private int playerID = 0;
 	private Random num = new Random();
 	private Image bgImage = new Image("file:bg2.gif");
-	private final Vector<Integer> selected = new Vector<Integer>(2,1);
+	private final Vector<Integer> selected = new Vector<>(2,1);
 	private int counter = 0;
 	/** 
 	 * setStage is used to set the stage that will hold this thing.
 	 * This allows us to resize the gameBoard dynamically
 	 * **/	
-	public CanvasManager(Canvas canvas, final Stage rooty){
+	public CanvasManager(Canvas canvas, final Stage root){
 		this.canvas = canvas;
 		gc = canvas.getGraphicsContext2D();
-		this.root = rooty;
+		this.root = root;
 		initializeShips();
 		selected.add(0);
 		selected.add(0);
-		
+
 		canvas.setOnMouseClicked(new EventHandler<MouseEvent>(){
 			
 			private int oldX;
@@ -53,9 +53,9 @@ public class CanvasManager {
 				if(!doneWithTurn()){
 					//determine which tile was clicked
 					//and map that to the indexes in the array of ships (basically the map)
-					int tilesHeight = (int) root.getScene().getHeight() / tilesY;
-					int indexX = ((int) event.getX()) / tilesHeight;
-					int indexY = ((int) event.getY()) / tilesHeight;
+					double tilesHeight = CanvasManager.this.root.getScene().getHeight() / tilesY;
+					int indexX = (int) (event.getX() / tilesHeight);
+					int indexY = (int) (event.getY() / tilesHeight);
 					
 					if(state == FIRST_CLICK){
 						oldX = indexX;
@@ -170,7 +170,7 @@ public class CanvasManager {
 		canvas.setHeight(root.getScene().getHeight());
 		
 		
-		int height = (int) root.getScene().getHeight() / tilesY;
+		double height = root.getScene().getHeight() / tilesY;
 		for(int i = 0; i < tilesX; i++){
 			for(int j = 0; j < tilesY; j++){
 				drawRectangle(i * height, j * height, height);
@@ -178,7 +178,7 @@ public class CanvasManager {
 		}
 	}
 
-	private void drawRectangle(int x, int y, int height) { //, int width, int height){
+	private void drawRectangle(double x, double y, double height) { //, int width, int height){
 		
         gc.setStroke(bg);		
 		gc.setFill(this.doneWithTurn() ? Color.GRAY : bg);
@@ -213,7 +213,7 @@ public class CanvasManager {
 	}
 
 	private void drawShips(){
-		int height = (int) root.getScene().getHeight() / tilesY;
+		double height = root.getScene().getHeight() / tilesY;
 		for(int i = 0; fleet != null && i < fleet.length; i++){
 			for(int j = 0; fleet[0] != null && j < fleet[0].length; j++){
 				if(fleet[i][j] != null)
@@ -226,7 +226,7 @@ public class CanvasManager {
 		return this.fleet;
 	}
 
-	private boolean hasSelectedSquare(int x, int y, int height){
+	private boolean hasSelectedSquare(double x, double y, double height){
 		return (selected.get(0) == x / height && selected.get(1) == y / height) && state == SECOND_CLICK;
 	}
 
@@ -236,7 +236,7 @@ public class CanvasManager {
 	 * so you have to do your x/ width, y / width conversions prior to using this method.
 	 * This is to accommodate more use-cases, and for making existing code more readable.
 	 */
-	private int distanceFromSelected(int currentX, int currentY){
+	private int distanceFromSelected(double currentX, double currentY){
 		int selectedX = selected.get(0);
 		int selectedY = selected.get(1);
 		return ((int) (Math.abs((double)currentX - selectedX)) + (int) (Math.abs((double) currentY - selectedY))); 	
