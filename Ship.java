@@ -84,10 +84,6 @@ public class Ship implements Serializable {
 	public void drawShip(GraphicsContext gc, int x, int y, int width) {
 		Image img = (playerID == 0 ? sprites[0] : sprites[1]);
 		gc.drawImage(img, x, y, width, width);
-		System.out.println(img.getHeight());
-		System.out.println(img.isBackgroundLoading());
-		System.out.println(img.isError());
-		System.out.println(img.getException());
 	}
 	public void drawShipOld(GraphicsContext gc, int x, int y, int width) {
 		gc.setFill(playerID == 0 ? Color.BLUE : Color.RED);

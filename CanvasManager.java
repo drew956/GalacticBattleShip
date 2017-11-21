@@ -17,7 +17,6 @@ public class CanvasManager {
 	private Ship[][] fleet;
 	private int tilesX = 20;
 	private int tilesY = 20;
-	private int count  = 0;
 	private final static int FIRST_CLICK  = 0;
 	private final static int SECOND_CLICK = 1;
 	private final static int WAITING      = 2;
@@ -27,7 +26,7 @@ public class CanvasManager {
 	private Random num = new Random();
 	private Image bgImage = new Image("file:bg2.gif");
 	private final Vector<Integer> selected = new Vector<Integer>(2,1);
-
+	private int counter = 0;
 	/** 
 	 * setStage is used to set the stage that will hold this thing.
 	 * This allows us to resize the gameBoard dynamically
@@ -46,7 +45,6 @@ public class CanvasManager {
 			private int oldY;
 			private int newX;
 			private int newY;
-			private int counter = 0;
 	
 			/* 
 			 * Map the X Y coordinates into the slots of the multidimensional array
@@ -67,29 +65,27 @@ public class CanvasManager {
 						
 						state = SECOND_CLICK;
 						System.out.println("First click");
-					}else if (state == SECOND_CLICK){
+					} else if (state == SECOND_CLICK) {
 						newX = indexX;
 						newY = indexY;
 						//do other processing, such as (if the new square is an enemy attack them,)
 						// 							   (but if it is empty, move there)
 						if(fleet[oldX][oldY] != null && fleet[oldX][oldY].getPlayerId() == playerID){
 							counter++;
-							if(counter == 2) {
-								state = WAITING;
-								counter = 0;
-							}
+							state = FIRST_CLICK; //no matter what we transition back to FIRST_CLICK, and the final
+												 //check to see if counter == 2 will set us to WAITING 
+							
 							if(fleet[newX][newY] == null){
 								if(  distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
 									fleet[newX][newY] = fleet[oldX][oldY];
 									fleet[oldX][oldY] = null;
-										
 								}else{
 									System.out.println("Unable to move! Too far away!");
-									state = FIRST_CLICK;//so it doesn't just end your turn for making a mistake
+								    counter--;
 								}
 							}else if(fleet[newX][newY].getPlayerId() == fleet[oldX][oldY].getPlayerId() ) { 
-								state = FIRST_CLICK;
 								System.out.println("You can't destroy yourself!");
+                                counter--;
 							} else {
 								if(fleet[newX][newY].getPlayerId() != fleet[oldX][oldY].getPlayerId()){
 									if( distanceFromSelected(newX, newY) <= fleet[oldX][oldY].getNumSpaces()){
@@ -102,12 +98,10 @@ public class CanvasManager {
 										}
 										else {
 											System.out.println("Missed! HA HA HA!!");
-											//System.out.println("Ship of Player " + (fleet[oldX][oldY].getPlayerId() + 1) + " destroyed");
-											//fleet[oldX][oldY] = null;
 										}
 									}else{
 										System.out.println("Too far to attack!");
-										state = CanvasManager.FIRST_CLICK;
+    								    counter--;
 									}
 								}
 							}
@@ -116,6 +110,11 @@ public class CanvasManager {
 							state = FIRST_CLICK;
 						}
 					}
+					
+					if(counter == 2) { //this is an imperfect implementation
+                        state = WAITING;
+                        counter = 0;
+                    }
 				}
 			}
 			
@@ -190,7 +189,10 @@ public class CanvasManager {
 			if(fleet[selected.get(0)][selected.get(1)] != null){
 				if( distance <= fleet[selected.get(0)][selected.get(1)].getNumSpaces() ){
 					if( distance != 0 ){
-						gc.setFill(Color.rgb(0, 255, 255, 0.3) );
+						Color fill = fleet[selected.get(0)][selected.get(1)].getPlayerId() == playerID 
+								? Color.rgb(0, 255, 255, 0.3) : Color.rgb(255, 0, 0, 0.3);
+								
+						gc.setFill(fill);
 						//gc.fillText( "" + distance, x + width/2, y + width/2); //gc.getTextBaseline()
 						gc.fillRect(x, y, width, width);
 					}
@@ -214,7 +216,7 @@ public class CanvasManager {
 		return this.fleet;
 	}
 	private boolean hasSelectedSquare(int x, int y, int width){
-		return selected.get(0) == x / width && selected.get(1) == y / width;
+		return (selected.get(0) == x / width && selected.get(1) == y / width) && state == SECOND_CLICK;
 	}
 	/** 
 	 * distanceFromSelected(int currentX, int currentY) expects currentX and currentY to be array indexes,
