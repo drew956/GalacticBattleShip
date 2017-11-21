@@ -3,6 +3,7 @@ import java.net.*;
 import java.util.ArrayList;
 import java.lang.Thread;
 
+import javafx.scene.layout.*;
 import javafx.stage.Stage;
 import javafx.scene.Group;
 import javafx.scene.Node;
@@ -13,14 +14,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.ColumnConstraints;
-import javafx.scene.layout.ColumnConstraintsBuilder;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.paint.Paint;
 import javafx.scene.shape.Circle;
@@ -78,8 +71,7 @@ public class Client extends Application {
         port.setText("8000");
 		ipOfServer.setText("localhost");
 		textArea.setDisable(true);
-		
-		
+
 		textArea.setEditable(false);
         text.setEditable(false);
         
@@ -428,13 +420,16 @@ public class Client extends Application {
 	    }.start();
 	    System.out.println("Just started the animation timer");
 		
-	    GridPane pane = new GridPane();	    
-		pane.add(canvas, 0,0);
+	    BorderPane pane = new BorderPane();
+		pane.setCenter(canvas);
+		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
+		/*
 		ColumnConstraints column1 = new ColumnConstraints();
 		column1.setPercentWidth(100);
 		column1.setHgrow(Priority.ALWAYS);
 		pane.getColumnConstraints().add(0, column1); // each get 50% of width
-		
+		*/
+
 		//createAndSetNewScene(pane, size_x, size_y);
 		Scene newScene = new Scene(pane, size_x, size_y);		
 		sceneArray.add(newScene);

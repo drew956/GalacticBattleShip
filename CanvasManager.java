@@ -53,9 +53,9 @@ public class CanvasManager {
 				if(!doneWithTurn()){
 					//determine which tile was clicked
 					//and map that to the indexes in the array of ships (basically the map)
-					int tileWidth = (int) root.getScene().getWidth() / tilesX;
-					int indexX = ((int) event.getX()) / tileWidth;
-					int indexY = ((int) event.getY()) / tileWidth;
+					int tilesHeight = (int) root.getScene().getHeight() / tilesY;
+					int indexX = ((int) event.getX()) / tilesHeight;
+					int indexY = ((int) event.getY()) / tilesHeight;
 					
 					if(state == FIRST_CLICK){
 						oldX = indexX;
@@ -120,18 +120,23 @@ public class CanvasManager {
 			
 		});
 	}
+
 	public void setPlayerID(int id){
 		this.playerID = id;
 	}
+
 	public void setFleet(Ship[][] fleet){
 		this.fleet = fleet;
 	}
+
 	public boolean doneWithTurn(){
 		return this.state == CanvasManager.WAITING;
 	}
+
 	public void setTurn(){
 		this.state = CanvasManager.FIRST_CLICK;
 	}
+
 	private void initializeShips(){
 		fleet = new Ship[tilesX][tilesY];
 		for(int i = 0; i < tilesX; i++){
@@ -151,6 +156,7 @@ public class CanvasManager {
 			//row++;
 		}
 	}
+
 	public void drawMap(){
 		gc.clearRect(0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		gc.drawImage(bgImage, 0, 0, root.getScene().getWidth(), root.getScene().getHeight());
@@ -158,34 +164,36 @@ public class CanvasManager {
 		drawShips();	
 		
 	}
+
 	private void drawRectangles(){
-		canvas.setWidth(root.getScene().getWidth());
-		canvas.setHeight(root.getScene().getWidth());
+		canvas.setWidth(root.getScene().getHeight());
+		canvas.setHeight(root.getScene().getHeight());
 		
 		
-		int width = (int) root.getScene().getWidth() / tilesX;
+		int height = (int) root.getScene().getHeight() / tilesY;
 		for(int i = 0; i < tilesX; i++){
 			for(int j = 0; j < tilesY; j++){
-				drawRectangle(i * width, j * width, width);
+				drawRectangle(i * height, j * height, height);
 			}
 		}
 	}
-	private void drawRectangle(int x, int y, int width) { //, int width, int height){
+
+	private void drawRectangle(int x, int y, int height) { //, int width, int height){
 		
         gc.setStroke(bg);		
 		gc.setFill(this.doneWithTurn() ? Color.GRAY : bg);
 		
 		//if we already selected a square, and if the square we selected is the current one we are drawing
 		//then color the background of the square using transparent color
-		if(  hasSelectedFirstShip() && hasSelectedSquare(x, y, width)){ 
+		if (hasSelectedFirstShip() && hasSelectedSquare(x, y, height)){
 			gc.setFill(Color.rgb(255, 8 * 16 + 12, 0, 0.3));
 			//#FF8C00 Dark Orange, but looks different due to alpha value
-			gc.fillRect(x, y, width, width);
+			gc.fillRect(x, y, height, height);
 
 		}
 		
-		if(  hasSelectedFirstShip() ){
-			int distance = distanceFromSelected(x / width, y / width);
+		if (hasSelectedFirstShip()) {
+			int distance = distanceFromSelected(x / height, y / height);
 			if(fleet[selected.get(0)][selected.get(1)] != null){
 				if( distance <= fleet[selected.get(0)][selected.get(1)].getNumSpaces() ){
 					if( distance != 0 ){
@@ -194,36 +202,40 @@ public class CanvasManager {
 								
 						gc.setFill(fill);
 						//gc.fillText( "" + distance, x + width/2, y + width/2); //gc.getTextBaseline()
-						gc.fillRect(x, y, width, width);
+						gc.fillRect(x, y, height, height);
 					}
 				}		
 			}
 		}
 		gc.setStroke(Color.WHITE );
-		gc.strokeRect(x, y, width, width);
+		gc.strokeRect(x, y, height, height);
 
 	}
+
 	private void drawShips(){
-		int width = (int) root.getScene().getWidth() / tilesX;
+		int height = (int) root.getScene().getHeight() / tilesY;
 		for(int i = 0; fleet != null && i < fleet.length; i++){
 			for(int j = 0; fleet[0] != null && j < fleet[0].length; j++){
 				if(fleet[i][j] != null)
-					fleet[i][j].drawShip(gc, i * width, j * width, width);
+					fleet[i][j].drawShip(gc, i * height, j * height, height);
 			}
 		}
 	}
+
 	public Ship[][] getShips() {
 		return this.fleet;
 	}
-	private boolean hasSelectedSquare(int x, int y, int width){
-		return (selected.get(0) == x / width && selected.get(1) == y / width) && state == SECOND_CLICK;
+
+	private boolean hasSelectedSquare(int x, int y, int height){
+		return (selected.get(0) == x / height && selected.get(1) == y / height) && state == SECOND_CLICK;
 	}
+
 	/** 
 	 * distanceFromSelected(int currentX, int currentY) expects currentX and currentY to be array indexes,
 	 * not pixels. 
 	 * so you have to do your x/ width, y / width conversions prior to using this method.
 	 * This is to accommodate more use-cases, and for making existing code more readable.
-	 * **/
+	 */
 	private int distanceFromSelected(int currentX, int currentY){
 		int selectedX = selected.get(0);
 		int selectedY = selected.get(1);
