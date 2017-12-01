@@ -138,207 +138,11 @@ public class Client extends Application {
     	System.out.println("Called main");
         launch(args);
     }
-    
-    
-    /*
-    public void run() {
-        try {
-            String data = input.readUTF();
-            System.out.println(data);        
-        } catch( Exception e ){
-            System.out.println(e);
-        }
-	} */
-    @Deprecated
-    private void connectToServer(){
-        String host = "localhost";
-        
-        try {
-            // Create a socket to connect to the server
-            
-            server = new Socket(host, 8000);
-
-            DataInputStream input = new DataInputStream(server.getInputStream());
-
-            // Create an output stream to send data to the server
-            DataOutputStream output = new DataOutputStream(server.getOutputStream());
-            /*ClientTaskManager task = new ClientTaskManager(server);
-            Thread t = new Thread(task);
-            t.start();*/
-        }
-        catch (Exception ex) {
-            System.err.println(ex);
-        }
-
-        /*	Control the game on a separate thread
-        	Thread thread = new Thread(this);
-        	thread.start(); 
-        */
-    }
-    
-	public boolean selectShip(int x, int y) {
-		return false;
-	}
-
-	/*
-	public boolean moveShip(Ship boat, int x1, int y1) {
-		return false;
-	}
-
-	public boolean attackShip(Ship attackingBoat, int x, int y) {
-		return false;
-	}
-    */
-	public void sendToServer() {
-
-	}
-
-	public void getFromServer() {
-
-	}
-
-	public void checkBaseStatus() {
-
-	}
-
-	public void waitForOwnTurn() {
-
-	}
 		
 	public void initScenes() {
 		//initGameScene(); //putting each scene into its own function will allow us to tweak them easier
 		//initTestScene();
 		initTestScene2();
-	}
-	/**
-	 * <p>Initializes the main game's Screen object
-	 * The initial idea was to use a Canvas, but using nodes is simpler.<br />
-	 * javafx has a nifty TranslateTransition class that can do animation
-	 * for us as well </p>
-	 **/
-	private void initGameScene() {
-		Canvas canvas = new Canvas(600, 600);
-		GraphicsContext gc = canvas.getGraphicsContext2D();
-
-		gc.clearRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gc.setFill(Color.BEIGE);
-		gc.fillRect(0, 0, canvas.getWidth(), canvas.getHeight());
-		gc.setFill(Color.ALICEBLUE );
-		gc.setStroke(Color.GREEN);
-		gc.strokeText("HELLO WORLD", 40.0, 30.0);
-		
-		gc.setFill(Color.CORNSILK);
-		gc.fillOval(canvas.getWidth()/2 - 40/2, canvas.getHeight()/2 - 60/2, 40, 60);
-
-		gc.setFill(Color.MAROON);
-		gc.fillPolygon( new double[] {100.0, 150.0, 100.0, 50.0}, new double[] {50.0, 100.0, 150.0, 100.0}, 4);
-		gc.strokeOval(canvas.getWidth()/2 - 40/2, canvas.getHeight()/2 - 60/2, 40, 60);
-		
-		
-		
-		GridPane pane = new GridPane();
-		pane.add(canvas, 0, 0);
-
-		//this is for figuring out where things are positioned
-		canvas.setOnMouseClicked(new EventHandler<MouseEvent>(){
-
-			public void handle(MouseEvent event) {
-				System.out.println(event.getX());
-				System.out.println(event.getY());
-			}
-			
-			
-		});
-		Scene canvasScene = new Scene(pane, canvas.getWidth(), canvas.getHeight());
-		sceneArray.add(canvasScene);
-
-		primaryStage.setWidth(canvasScene.getWidth());  //have to resize the stage before
-		primaryStage.setHeight(canvasScene.getHeight()); //changing the root, else it will not resize properly
-		primaryStage.setScene(canvasScene);
-	}
-
-	/** 
-	 * <i>initTestScene</i> is currently being used to test if using a normal
-	 * GridPane or other pane would be more effective than using a canvas <br />
-	 * Upon further testing I have concluded that this will be far easier to use than the Canvas element
-	 * 
-	 * TranslateTransitions are dope:
-	 * https://docs.oracle.com/javafx/2/api/javafx/animation/TranslateTransition.html
-	 * 
-	 * **/
-	private void initTestScene() {
-		int size_x = 600;
-		int size_y = 800;
-		
-		Pane board = new Pane();
-		
-		GridPane UI = new GridPane();
-		//UI.setGridLinesVisible(true);
-		UI.setHgap(0);
-		UI.setVgap(0);
-		//UI.setAlignment(Pos.CENTER);
-		
-		Scene game =  new Scene(UI, size_x, size_y);
-
-		
-		Polygon ship = new Polygon(new double[]{
-										200.0, 0.0, 
-										250.0, 50.0, 
-										150.0, 50.0});
-		
-		 
-		    TextArea box1 = new TextArea(); // Text boxes for demonstration of UI layout
-			TextArea box2 = new TextArea();
-			TextArea box3 = new TextArea();
-		Label score = new Label("Score 2 : 2");
-		
-		double squareSize = 20;
-		int numTilesSquared = (int)(size_x / squareSize);
-		Tile[][] grid = new Tile[numTilesSquared][numTilesSquared];
-		for (int i = 0; i < numTilesSquared; i++) {
-			for (int j = 0; j < numTilesSquared; j++) {
-				grid[i][j] = new Tile(i*squareSize, j*squareSize, squareSize, numTilesSquared);
-				grid[i][j].renderTile(board); //this method does not belong inside of TILE
-			}
-		}
-		
-		Circle randomCircle = new Circle(50, 50, 50);
-		randomCircle.setFill(Color.AQUA);
-		ship.setFill(Color.BLACK);
-		GridPane.setHalignment(board, HPos.CENTER);
-		GridPane.setHalignment(score, HPos.CENTER);
-		UI.add(board, 1, 1);
-		UI.add(box1, 1, 2);
-		UI.add(box2, 0, 1);
-		UI.add(box3, 2, 1); 
-		UI.add(score, 1, 0);
-
-		
-		TranslateTransition ttCircle  = new TranslateTransition(Duration.millis(2000), randomCircle);
-		final TranslateTransition ttPolygon = new TranslateTransition(Duration.millis(2000), ship);
-		
-		//if you click the triangle it will stop, or resume its animation
-		ship.setOnMouseClicked(new EventHandler<MouseEvent>(){
-			public void handle(MouseEvent e){
-				if(ttPolygon.getStatus() == Status.RUNNING){
-					ttPolygon.pause();
-				} else {
-					ttPolygon.play();
-				}
-			}
-			
-		});
-		sceneArray.add(game);
-		setScreen(sceneArray.size() - 1);
-
-		ttCircle.setByY(200f);
-		ttCircle.setCycleCount(2);
-		ttCircle.setAutoReverse(true);
-		ttPolygon.setByX(200f);
-		ttPolygon.setCycleCount(TranslateTransition.INDEFINITE);
-		ttPolygon.setAutoReverse(true);
-		ttCircle.play();
-		ttPolygon.play();	
 	}
 
 	private void initTestScene2() {
@@ -438,18 +242,7 @@ public class Client extends Application {
 		primaryStage.setMinWidth(newScene.getWidth()+15);
 		primaryStage.setMinHeight(newScene.getHeight());
 	}
-	private void createAndSetNewScene(Parent p, int width, int height){
-		Scene newScene = new Scene(p, width, height);
-		
-		sceneArray.add(newScene);
 
-		primaryStage.setWidth((double) width);
-		primaryStage.setHeight((double) height);
-		primaryStage.setScene(newScene);
-		primaryStage.setTitle("Scene " + sceneArray.size());
-		
-		//primaryStage.sh
-	}
 	/**
 	 * Changes the current screen to a new one stored inside of the private primaryStage attribute
 	 * Checks to make sure the scene requested is within bounds
@@ -465,5 +258,4 @@ public class Client extends Application {
 			System.out.println("setScreen(int i): You've entered an invalid index for your scene.\n");
 		}
 	}
-
 }

@@ -75,18 +75,7 @@ public class TaskManager implements Runnable {
 			} 
     	}
     }
-    
-    public void setPosition(Ship boat, int x, int y) {
 
-	}
-
-	public boolean isWon() {
-		return false;
-	}
-
-	public void sendUpdate() {
-        
-	}
 	private void initializeShips(){
 		ships = new Ship[tilesX][tilesY];
 		for(int i = 0; i < tilesX; i++){
