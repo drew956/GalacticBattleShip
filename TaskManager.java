@@ -11,8 +11,8 @@ public class TaskManager implements Runnable {
     private ObjectOutputStream obOutput1;
     private ObjectOutputStream obOutput2;
     private Ship[][] ships;
-    private int tilesX = 20;
-    private int tilesY = 20; //default size of the map
+    private int tilesX = 12;
+    private int tilesY = 12; //default size of the map
     
     TaskManager(Socket player1, Socket player2) throws Exception {
         this.player1 = player1;
@@ -84,11 +84,25 @@ public class TaskManager implements Runnable {
 				//fleet[i][j] = new Ship( j < tilesY / 2 ? 0 : 1);
 			}
 		}
-		
-		for(int i = 0; i < ships[0].length; i += 3){
-			ships[i][0] = new Ship(0);
-			ships[i][ships[0].length - 1] = new Ship(1);
-		}
+		ships[3][0] = new Ship(0);
+		ships[4][1] = new Ship(0);
+		ships[5][2] = new Ship(0);
+		ships[6][2] = new Ship(0);
+		ships[7][1] = new Ship(0);
+		ships[8][0] = new Ship(0);
+
+
+		ships[3][ships[0].length - 1] = new Ship(1);
+		ships[4][ships[0].length - 2] = new Ship(1);
+		ships[5][ships[0].length - 3] = new Ship(1);
+		ships[6][ships[0].length - 3] = new Ship(1);
+		ships[7][ships[0].length - 2] = new Ship(1);
+		ships[8][ships[0].length - 1] = new Ship(1);
+
+//		for(int i = 0; i < ships[0].length; i += 3){
+//			ships[i][0] = new Ship(0);
+//			ships[i][ships[0].length - 1] = new Ship(1);
+//		}
 	}
 
 

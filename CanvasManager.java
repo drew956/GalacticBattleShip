@@ -15,8 +15,8 @@ public class CanvasManager {
 	private GraphicsContext gc;
 	private Color bg = Color.BLACK;
 	private Ship[][] fleet;
-	private int tilesX = 20;
-	private int tilesY = 20;
+	private int tilesX = 12;
+	private int tilesY = 12;
 	private final static int FIRST_CLICK  = 0;
 	private final static int SECOND_CLICK = 1;
 	private final static int WAITING      = 2;
