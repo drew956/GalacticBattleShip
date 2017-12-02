@@ -161,8 +161,7 @@ public class CanvasManager {
 		gc.clearRect(0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		gc.drawImage(bgImage, 0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		drawRectangles();
-		drawShips();	
-		
+		drawShips();
 	}
 
 	private void drawRectangles(){

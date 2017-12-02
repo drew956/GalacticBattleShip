@@ -1,37 +1,21 @@
 import java.io.*;
 import java.net.*;
 import java.util.ArrayList;
-import java.lang.Thread;
 
 import javafx.scene.layout.*;
 import javafx.stage.Stage;
-import javafx.scene.Group;
-import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
-import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Polygon;
-import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Font;
-import javafx.animation.Animation.Status;
 import javafx.animation.AnimationTimer;
-import javafx.animation.TranslateTransition;
 import javafx.application.Application;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.util.Duration;
 
 /* Tutorial on game development using javafx, useful for creating the game loop
  * https://gamedevelopment.tutsplus.com/tutorials/introduction-to-javafx-for-game-development--cms-23835
@@ -39,7 +23,6 @@ import javafx.util.Duration;
  * */
 
 public class Client extends Application {
-	private Tile[][] map;
 	private Ship[][] fleet;
 	private Player   player;
 	private int      playerID;
@@ -140,12 +123,10 @@ public class Client extends Application {
     }
 		
 	public void initScenes() {
-		//initGameScene(); //putting each scene into its own function will allow us to tweak them easier
-		//initTestScene();
-		initTestScene2();
+		initGameScene();
 	}
 
-	private void initTestScene2() {
+	private void initGameScene() {
 		int size_x = 600;
 		int size_y = 635;
 		
@@ -167,10 +148,7 @@ public class Client extends Application {
 	        public void handle(long currentNanoTime)
 	        {
 	            double t = (currentNanoTime - startNanoTime) / 1000000000.0; //time in seconds 
-	            //primaryStage.getScene().setWidth(primaryStage.getWidth());
-	            //if(this.status == WAITING){
-	            //	manager.drawMap();
-	            //}
+
 	            switch(status){
 	            	case WAITING:
 	            		try{
@@ -204,23 +182,6 @@ public class Client extends Application {
 	            	manager.drawMap();
         		}
 	        }
-	        private void endTurn(){
-	        	
-	        }
-	        private void getNewMap(){
-	        	//get the game board from the server
-	    		try {
-	    			Ship[][] fleet = (Ship[][]) input.readObject();
-	    		} catch (ClassNotFoundException e) {
-	    			e.printStackTrace();
-	    		} catch (IOException e) {
-	    			e.printStackTrace();
-	    		}
-	    		manager.setFleet(fleet);
-	        }
-	        private void sendNewMap(){
-	        	
-	        }
 	    }.start();
 	    System.out.println("Just started the animation timer");
 		
@@ -228,14 +189,6 @@ public class Client extends Application {
 		pane.setCenter(canvas);
 		pane.setBackground(new Background(new BackgroundFill(Color.BLACK, CornerRadii.EMPTY, Insets.EMPTY)));
 
-		/*
-		ColumnConstraints column1 = new ColumnConstraints();
-		column1.setPercentWidth(100);
-		column1.setHgrow(Priority.ALWAYS);
-		pane.getColumnConstraints().add(0, column1); // each get 50% of width
-		*/
-
-		//createAndSetNewScene(pane, size_x, size_y);
 		Scene newScene = new Scene(pane, size_x, size_y);
 		sceneArray.add(newScene);
 

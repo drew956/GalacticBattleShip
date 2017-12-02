@@ -80,6 +80,7 @@ public class Ship implements Serializable {
 	public Color getShipColor() {
 		return playerID == 0 ? Color.BLUE : Color.RED;
 	}
+
 	public void drawShip(GraphicsContext gc, double x, double y, double height) {
 		Image img = (playerID == 0 ? sprites[0] : sprites[1]);
 		gc.drawImage(img, x, y, height, height);
