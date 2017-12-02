@@ -28,6 +28,7 @@ public class Ship implements Serializable {
 		sprites[0] = new Image("file:p1.png", true);
 		sprites[1] = new Image("file:p2.png", true);
 	}
+
 	public Ship (int playerID) {
 		//this.color = playerID == 0 ? Color.BLUE : Color.RED;
 		this.playerID = playerID;

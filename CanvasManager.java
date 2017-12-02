@@ -14,6 +14,7 @@ public class CanvasManager {
 	private Canvas canvas;
 	private GraphicsContext gc;
 	private Color bg = Color.BLACK;
+	private Base redBase, blueBase;
 	private Ship[][] fleet;
 	private int tilesX = 12;
 	private int tilesY = 12;
@@ -162,6 +163,23 @@ public class CanvasManager {
 		gc.drawImage(bgImage, 0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		drawRectangles();
 		drawShips();
+		drawBases();
+	}
+
+	private void drawBases() {
+		blueBase = new Base(0);
+		redBase  = new Base(1);
+
+		blueBase.drawBase(gc,
+				root.getScene().getWidth() / 2,
+				root.getScene().getHeight(),
+				2*(root.getScene().getWidth() / tilesX)
+		);
+
+		redBase.drawBase(gc,
+				root.getScene().getWidth() / 2,
+				0,
+				2*(root.getScene().getWidth() / tilesX));
 	}
 
 	private void drawRectangles(){

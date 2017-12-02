@@ -9,7 +9,6 @@ public class TaskManager implements Runnable {
     private ObjectInputStream  obInput2;
     private ObjectOutputStream obOutput1;
     private ObjectOutputStream obOutput2;
-    private Base redBase, blueBase;
     private Ship[][] ships;
     private int tilesX = 12;
     private int tilesY = 12; //default size of the map
@@ -27,7 +26,6 @@ public class TaskManager implements Runnable {
 		obOutput1.flush();
 		obOutput2.writeInt(1);
 		obOutput2.flush();
-		initializeBases();
 		initializeShips();
     }
 
@@ -38,7 +36,6 @@ public class TaskManager implements Runnable {
         obOutput2 = out2; //new DataOutputStream( player2.getOutputStream() );
 		obInput1  = new ObjectInputStream ( player1.getInputStream()  );
 		obInput2  = new ObjectInputStream( player2.getInputStream() );
-		initializeBases();
         initializeShips();
 	}
 
@@ -105,11 +102,4 @@ public class TaskManager implements Runnable {
 //			ships[i][ships[0].length - 1] = new Ship(1);
 //		}
 	}
-
-	private void initializeBases() {
-
-	}
-
-
-    
 }

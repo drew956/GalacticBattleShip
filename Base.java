@@ -1,20 +1,19 @@
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.image.Image;
 
 public class Base {
 
-    private int ID;
+    private int playerID;
     private Coord[] region;
-    private transient Image sprite;
+    private transient Image[] sprites;
     private final int SIZE = 4;
 
-    public Base(int playerID, int initX, int initY) {
-        this.ID = playerID;
+    public Base(int playerID) {
+        this.playerID = playerID;
 
-        if (this.ID == 0) {
-            initBlue(initX, initY);
-        } else {
-            initRed(initX, initY);
-        }
+        sprites = new Image[2];
+        sprites[0] = new Image("file:base_blue.png");
+        sprites[1] = new Image("file:base_red.png");
     }
 
     public boolean inRegion(int x, int y) {
@@ -25,36 +24,9 @@ public class Base {
         return false;
     }
 
-    private void initBlue(int initX, int initY) {
-        sprite = new Image("file:baseb.png", true);
-
-        region[0].setX(initX);
-        region[0].setY(initY);
-
-        region[1].setX(initX+1);
-        region[1].setY(initY);
-
-        region[2].setX(initX);
-        region[2].setY(initY+1);
-
-        region[3].setX(initX+1);
-        region[3].setY(initY+1);
-    }
-
-    private void initRed(int initX, int initY) {
-        sprite = new Image("file:baser.png", true);
-
-        region[0].setX(initX);
-        region[0].setY(initY);
-
-        region[1].setX(initX-1);
-        region[1].setY(initY);
-
-        region[2].setX(initX);
-        region[2].setY(initY-1);
-
-        region[3].setX(initX-1);
-        region[3].setY(initY-1);
+    public void drawBase(GraphicsContext gc, double x, double y, double height) {
+        Image img = (sprites[playerID]);
+        gc.drawImage(img, x, y, height, height);
     }
 
     /**
