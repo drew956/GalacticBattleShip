@@ -163,7 +163,7 @@ public class CanvasManager {
 		gc.drawImage(bgImage, 0, 0, root.getScene().getWidth(), root.getScene().getHeight());
 		drawRectangles();
 		drawShips();
-		drawBases();
+//		drawBases();
 	}
 
 	private void drawBases() {

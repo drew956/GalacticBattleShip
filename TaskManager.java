@@ -88,6 +88,10 @@ public class TaskManager implements Runnable {
 		ships[6][2] = new Ship(0);
 		ships[7][1] = new Ship(0);
 		ships[8][0] = new Ship(0);
+		ships[9][0] = new Ship(0);
+		ships[8][1] = new Ship(0);
+		ships[3][1] = new Ship(0);
+		ships[2][0] = new Ship(0);
 
 
 		ships[3][ships[0].length - 1] = new Ship(1);
@@ -96,6 +100,10 @@ public class TaskManager implements Runnable {
 		ships[6][ships[0].length - 3] = new Ship(1);
 		ships[7][ships[0].length - 2] = new Ship(1);
 		ships[8][ships[0].length - 1] = new Ship(1);
+		ships[9][ships[0].length - 1] = new Ship(1);
+		ships[8][ships[0].length - 2] = new Ship(1);
+		ships[2][ships[0].length - 1] = new Ship(1);
+		ships[3][ships[0].length - 2] = new Ship(1);
 
 //		for(int i = 0; i < ships[0].length; i += 3){
 //			ships[i][0] = new Ship(0);
